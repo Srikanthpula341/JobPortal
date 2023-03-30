@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import com.jobs.handler.JobAPIHandler;
 
 @Configuration
-@CrossOrigin("*")
+//@CrossOrigin(origins = "http://localhost:4200")
 public class JobRouterConfig {
 	
 	@Autowired
@@ -37,7 +37,10 @@ public class JobRouterConfig {
 										.GET("/job-company",jobDetailsHandler::getJobByCompanyName)
 										.GET("/job/{id}",jobDetailsHandler::getJobDetailsById)
 										.GET("/job-tag",jobDetailsHandler::getJobListByTag)
-
+										.GET("/company",jobDetailsHandler::getCompanyList)
+										.GET("/title",jobDetailsHandler::getJobTitleList)
+										.DELETE("/delete",jobDetailsHandler::deleteOldRecords)
+										.GET(jobHandler::testApi)
 
 								
 								))

@@ -1,0 +1,5 @@
+runtime: java11
+entrypoint: java -jar JobPortal-0.0.2.jar
+instance_class: F1
+manual_scaling:
+  instances: 0

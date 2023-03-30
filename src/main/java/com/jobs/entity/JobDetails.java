@@ -19,7 +19,7 @@ public class JobDetails {
 	private String id;
 	private String title;
 	private String description;
-	private String redirectUrl;
+	private String redirect_url;
 	private String adref;
 	private boolean salaryIsPredicted;
 	private LocalDateTime created;

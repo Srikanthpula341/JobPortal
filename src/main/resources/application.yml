@@ -7,8 +7,6 @@ spring:
       database: JobDetailsDB
       auto-index-creation: true
 
-server:
-  port: 8082
 
 
 

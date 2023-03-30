@@ -1,6 +1,21 @@
 package com.jobs.handler;
 
 import com.jobs.entity.BaseResponse;
+import com.jobs.entity.JobList;
+import com.jobs.entity.JobSearchResults;
+import com.jobs.repository.JobDetailsRepository;
+import com.jobs.repository.JobListRepository;
+import org.slf4j.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import com.clearbit.ApiException;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,15 +25,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-import com.jobs.entity.JobList;
-import com.jobs.entity.JobSearchResults;
-import com.jobs.repository.JobDetailsRepository;
-import com.jobs.repository.JobListRepository;
-
 import reactor.core.publisher.Mono;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.clearbit.ApiException;
+
 
 @Component
 public class JobAPIHandler {
@@ -34,11 +43,14 @@ public class JobAPIHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(JobAPIHandler.class);
 
-	private static String baseUrl = "https://api.adzuna.com/v1/api/jobs/in/search/50?";
+	private static String baseUrl = "https://api.adzuna.com/v1/api/jobs/in/search/500?";
 
 	private static String keyUrl = "app_id=b9ef4285&app_key=a776aea724dfb21c2f24f9c6096f6d9a";
 
-	private static String fetchValue = "&results_per_page=50";
+	private static String fetchValue = "&results_per_page=2";
+
+	private static final String GOOGLE_SEARCH_URL = "https://www.google.com/search?q=";
+	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36";
 
 	private static final String finalUrl = baseUrl + keyUrl + fetchValue;
 
@@ -47,7 +59,13 @@ public class JobAPIHandler {
 		fetchAndSaveJobs(null).subscribe();
 	}
 
+//	CompanyHandler companyHandler = new CompanyHandler();
 
+
+
+	public Mono<ServerResponse> testApi (ServerRequest request){
+		return ServerResponse.status(HttpStatus.OK).bodyValue("Test Api");
+	}
 
 	public Mono<ServerResponse> fetchAndSaveJobs(ServerRequest request) {
 		Mono<JobSearchResults> jobApiList = webClient
@@ -74,6 +92,20 @@ public class JobAPIHandler {
 									jobList.setLocation(savedJob.getLocation().getArea().toString());
 									jobList.setCreatedAt(savedJob.getCreated().toString());
 									jobList.setTag(savedJob.getCategory().getTag());
+									String companyName = job.getCompany().getDisplay_name();
+									String imgUrl="";
+									//companyHandler.getCompanyLogoUrl(companyName);
+
+
+									if (imgUrl != null || imgUrl!="") {
+										jobList.setCompanyLogo(imgUrl);
+									} else {
+										jobList.setCompanyLogo("");
+									}
+									//for(int i=0;i<10;i++){
+										System.out.println(companyName);
+										System.out.println(imgUrl);
+									//}
 									//log.info("Saving JobList: {}", jobList);
 									return jobListRepository.save(jobList);
 								});
@@ -95,8 +127,39 @@ public class JobAPIHandler {
 				});
 	}
 
+	public String searchCompanyLogo(String companyName) {
+		try {
+			String searchQuery = URLEncoder.encode(companyName + " logo", StandardCharsets.UTF_8);
 
+			Document doc = Jsoup.connect("https://www.google.com/search?q=" + searchQuery)
+					.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
+					.get();
 
+			Elements imgElements = doc.select("img[data-src]");
+
+			if (imgElements.size() > 0) {
+				Element firstImgElement = imgElements.first();
+				String imgUrl = firstImgElement.attr("data-src");
+				return imgUrl;
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
 

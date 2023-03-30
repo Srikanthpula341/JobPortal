@@ -11,11 +11,11 @@
 	</parent>
 	<groupId>com.Job</groupId>
 	<artifactId>JobPortal</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>JobPortal</name>
 	<description>latest job search</description>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -43,9 +43,75 @@
 			<scope>test</scope>
 		</dependency>
 
-	
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.15.3</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.http-client/google-http-client-jackson2 -->
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-jackson2</artifactId>
+			<version>1.42.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-customsearch -->
+
+		<!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty -->
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client-jetty</artifactId>
+			<version>1.34.1</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.clearbit/client -->
+		<dependency>
+			<groupId>com.clearbit</groupId>
+			<artifactId>client</artifactId>
+			<version>0.9</version>
+		</dependency>
+
+
+
+
+
+
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20220924</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sourceforge.tess4j/tess4j -->
+		<dependency>
+			<groupId>net.sourceforge.tess4j</groupId>
+			<artifactId>tess4j</artifactId>
+			<version>5.4.0</version>
+		</dependency>
+
+
+
 
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>google</id>
+			<name>Google Maven Repository</name>
+			<url>https://maven.google.com</url>
+		</repository>
+		<repository>
+			<id>clearbit-releases</id>
+			<url>https://packages.clearbit.com/releases</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>

@@ -20,6 +20,8 @@ public class JobList {
 	private String tag;
 	private String location;
 	private String createdAt;
+
+	private String companyLogo;
 	
 
 }
