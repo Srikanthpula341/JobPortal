@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class JobList {
 	private String companyName;
 	private String tag;
 	private String location;
-	private String createdAt;
+	private LocalDateTime createdAt;
 	
 
 }

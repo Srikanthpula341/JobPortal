@@ -3,7 +3,9 @@ package com.jobs.router;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
+import com.jobs.handler.JobCardDetailsHandler;
 import com.jobs.handler.JobDetailsHandler;
+import com.jobs.handler.JobsByLanguageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,12 @@ public class JobRouterConfig {
 
 	@Autowired
 	private JobDetailsHandler jobDetailsHandler;
+
+	@Autowired
+	private JobsByLanguageHandler jobsByLanguageHandler;
+
+	@Autowired
+	private JobCardDetailsHandler handler;
 	
 	@Bean
 	public RouterFunction<ServerResponse> routerFunctionOrder() {
@@ -34,9 +42,15 @@ public class JobRouterConfig {
 
 										.GET("/jobs",jobHandler::fetchAndSaveJobs)
 										.GET("/job-list",jobDetailsHandler::getJobList)
+
+
+										//.GET("job/search",jobsByLanguageHandler::searchJobsByTitleRegex)
 										.GET("/job-company",jobDetailsHandler::getJobByCompanyName)
 										.GET("/job/{id}",jobDetailsHandler::getJobDetailsById)
 										.GET("/job-tag",jobDetailsHandler::getJobListByTag)
+										.GET("/job-card-details", handler::getCountByCreatedAtBetween)
+
+
 
 
 								

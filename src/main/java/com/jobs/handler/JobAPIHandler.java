@@ -20,6 +20,9 @@ import reactor.core.publisher.Mono;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 @Component
 public class JobAPIHandler {
 
@@ -38,12 +41,13 @@ public class JobAPIHandler {
 
 	private static String keyUrl = "app_id=b9ef4285&app_key=a776aea724dfb21c2f24f9c6096f6d9a";
 
-	private static String fetchValue = "&results_per_page=50";
+	private static String fetchValue = "&results_per_page=100";
 
 	private static final String finalUrl = baseUrl + keyUrl + fetchValue;
 
 	@Scheduled(fixedDelay = 1080000) // 86,400,000 ms / 80 = 1,080,000 ms
 	public void scheduledFetchAndSaveJobs() {
+
 		fetchAndSaveJobs(null).subscribe();
 	}
 
@@ -55,7 +59,7 @@ public class JobAPIHandler {
 				.retrieve()
 				.bodyToMono(JobSearchResults.class);
 
-		return jobApiList.flatMapIterable(JobSearchResults::getResults).log()
+		return jobApiList.flatMapIterable(JobSearchResults::getResults)
 				.doOnNext(job -> job.setCategory(job.getCategory()))
 				.flatMap(job -> {
 					// Check if job with same ID exists in database
@@ -71,8 +75,13 @@ public class JobAPIHandler {
 									jobList.setTitle(savedJob.getTitle());
 									jobList.setCompanyName(savedJob.getCompany().getDisplay_name()
 											);
-									jobList.setLocation(savedJob.getLocation().getArea().toString());
-									jobList.setCreatedAt(savedJob.getCreated().toString());
+									String location = savedJob.getLocation().getArea().toString();
+									location = location.replaceAll("[\\[\\]]", ""); // remove brackets
+									String[] locationParts = location.split(",\\s*"); // split by comma and optional whitespace
+									Collections.reverse(Arrays.asList(locationParts)); // reverse order
+									String formattedLocation = String.join(", ", locationParts);
+									jobList.setLocation(formattedLocation);
+									jobList.setCreatedAt(savedJob.getCreated());
 									jobList.setTag(savedJob.getCategory().getTag());
 									//log.info("Saving JobList: {}", jobList);
 									return jobListRepository.save(jobList);

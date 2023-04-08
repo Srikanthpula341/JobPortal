@@ -48,6 +48,19 @@ public class JobDetailsHandler {
                     return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue("Failed to fetch job list");
                 });
     }
+    public Mono<ServerResponse> getAllJobList(ServerRequest request) {
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+
+        return jobListRepository.findAll()
+                .collectList()
+                .flatMap(jobLists -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(jobLists))
+                .onErrorResume(error -> {
+
+                    return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue("Failed to fetch job list");
+                });
+    }
 
 
 
